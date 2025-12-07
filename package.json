@@ -1,5 +1,6 @@
 {
-  "name": "exchangerates",
+  "name": "currency-manipulator",
+  "description": "A React application for manipulating global currencies.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,7 +19,6 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "cypress": "^12.17.1",
     "@eslint/js": "^9.36.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
