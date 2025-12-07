@@ -10,6 +10,10 @@ const CurrencyRow = ({
   currency: CurrencyEntry;
   index: number;
 }) => {
+  // Note: For number validation to work if field is cleared, we need to
+  // keep a separate state for the input value.
+  const [inputValue, setInputValue] = useState(currency.value.toString());
+
   const { updateCurrency } = useCurrencies();
   const [isSymbolValid, setIsSymbolValid] = useState(true);
   const [isValueValid, setIsValueValid] = useState(true);
@@ -26,6 +30,13 @@ const CurrencyRow = ({
   };
 
   const handleValueChange = (value: string) => {
+    setInputValue(value);
+
+    if (value === "") {
+      setIsValueValid(false);
+      return;
+    }
+
     const newValue = parseFloat(value);
     const isValid = !isNaN(newValue) && newValue > 0;
     setIsValueValid(isValid);
@@ -64,7 +75,7 @@ const CurrencyRow = ({
         <input
           data-testid={`value-input-${currency.originalSymbol || currency.symbol}`}
           type="number"
-          value={currency.value}
+          value={inputValue}
           step="0.000001"
           min={0}
           className={`border-2 border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-32 ${
