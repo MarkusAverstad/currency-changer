@@ -1,6 +1,6 @@
 import { CurrencyEntry } from "types";
 import { useCurrencies } from "hooks";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { validateSymbol } from "utils";
 
 const CurrencyRow = ({
@@ -12,6 +12,7 @@ const CurrencyRow = ({
 }) => {
   const { updateCurrency } = useCurrencies();
   const [isSymbolValid, setIsSymbolValid] = useState(true);
+  const [isValueValid, setIsValueValid] = useState(true);
 
   const handleSymbolChange = (value: string) => {
     setIsSymbolValid(validateSymbol(value));
@@ -22,6 +23,18 @@ const CurrencyRow = ({
     updateCurrency(currency.originalSymbol || currency.symbol, {
       symbol: value,
     });
+  };
+
+  const handleValueChange = (value: string) => {
+    const newValue = parseFloat(value);
+    const isValid = !isNaN(newValue) && newValue > 0;
+    setIsValueValid(isValid);
+
+    if (isValid) {
+      updateCurrency(currency.originalSymbol || currency.symbol, {
+        value: newValue,
+      });
+    }
   };
 
   return (
@@ -55,15 +68,11 @@ const CurrencyRow = ({
           step="0.000001"
           min={0}
           className={`border-2 border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-32 ${
-            currency.value > 0
+            isValueValid
               ? "border-gray-300 focus:border-blue-500"
               : "border-red-500 bg-red-50 focus:border-red-600"
           }`}
-          onChange={(e) =>
-            updateCurrency(currency.originalSymbol || currency.symbol, {
-              value: parseFloat(e.target.value),
-            })
-          }
+          onChange={(e) => handleValueChange(e.target.value)}
         />
       </td>
       <td className="px-6 py-4 border-r border-gray-200">
@@ -84,4 +93,4 @@ const CurrencyRow = ({
   );
 };
 
-export default CurrencyRow;
+export default memo(CurrencyRow);
