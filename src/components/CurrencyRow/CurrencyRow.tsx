@@ -1,5 +1,7 @@
 import { CurrencyEntry } from "types";
 import { useCurrencies } from "hooks";
+import { useState } from "react";
+import { validateSymbol } from "utils";
 
 const CurrencyRow = ({
   currency,
@@ -9,6 +11,15 @@ const CurrencyRow = ({
   index: number;
 }) => {
   const { updateCurrency } = useCurrencies();
+  const [isSymbolValid, setIsSymbolValid] = useState(true);
+
+  const handleSymbolChange = (value: string) => {
+    setIsSymbolValid(validateSymbol(value));
+
+    updateCurrency(currency.originalSymbol || currency.symbol, {
+      symbol: value,
+    });
+  };
 
   return (
     <tr
@@ -24,12 +35,12 @@ const CurrencyRow = ({
           type="text"
           maxLength={3}
           value={currency.symbol}
-          className="border-2 border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-20"
-          onChange={(e) =>
-            updateCurrency(currency.originalSymbol || currency.symbol, {
-              symbol: e.target.value,
-            })
-          }
+          className={`border-2 rounded px-3 py-2 text-sm focus:outline-none w-20 ${
+            isSymbolValid
+              ? "border-gray-300 focus:border-blue-500"
+              : "border-red-500 bg-red-50 focus:border-red-600"
+          }`}
+          onChange={(e) => handleSymbolChange(e.target.value)}
         />
       </td>
       <td className="px-6 py-4 border-r border-gray-200">
@@ -37,7 +48,12 @@ const CurrencyRow = ({
           type="number"
           value={currency.value}
           step="0.000001"
-          className="border-2 border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-32"
+          min={0}
+          className={`border-2 border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 w-32 ${
+            currency.value > 0
+              ? "border-gray-300 focus:border-blue-500"
+              : "border-red-500 bg-red-50 focus:border-red-600"
+          }`}
           onChange={(e) =>
             updateCurrency(currency.originalSymbol || currency.symbol, {
               value: parseFloat(e.target.value),
