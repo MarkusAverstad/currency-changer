@@ -16,6 +16,9 @@ const CurrencyRow = ({
   const handleSymbolChange = (value: string) => {
     setIsSymbolValid(validateSymbol(value));
 
+    // Note: We still update the symbol even if it's invalid.
+    // This allows for real-time validation feedback. In a real
+    // application the update would not be sent to the API until valid.
     updateCurrency(currency.originalSymbol || currency.symbol, {
       symbol: value,
     });
@@ -32,6 +35,7 @@ const CurrencyRow = ({
       </td>
       <td className="px-6 py-4 border-r border-gray-200">
         <input
+          data-testid={`symbol-input-${currency.originalSymbol || currency.symbol}`}
           type="text"
           maxLength={3}
           value={currency.symbol}
@@ -45,6 +49,7 @@ const CurrencyRow = ({
       </td>
       <td className="px-6 py-4 border-r border-gray-200">
         <input
+          data-testid={`value-input-${currency.originalSymbol || currency.symbol}`}
           type="number"
           value={currency.value}
           step="0.000001"
