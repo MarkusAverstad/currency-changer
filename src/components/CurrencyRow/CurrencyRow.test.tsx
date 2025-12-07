@@ -73,4 +73,7 @@ describe("CurrencyRow", () => {
       symbol: "C",
     });
   });
+
+  // Note: I didn't write tests for changing value here, since
+  // it's very similar to the symbol tests above.
 });
